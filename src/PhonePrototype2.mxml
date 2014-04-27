@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:parsley="http://www.spicefactory.org/parsley"
+			   xmlns:c="components.*"
+			   applicationDPI="320"
+			   splashScreenImage="@Embed('/assets/splash_v.png')"
+			   applicationComplete="application1_applicationCompleteHandler(event)">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.Timer;
+			
+			// NEW
+			import model.WallDataIPhone;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			import org.osmf.events.TimeEvent;
+			
+			import views.AlertsView;
+			import views.MedicationsView;
+			import views.RegistryView;
+			import views.VisitHomeView;
+			import views.VisitPlayBackView;
+			
+			// NEW
+			[Inject]
+			[Bindable]
+			public var wallData:WallDataIPhone;
+			
+/* 			static public function get lowerNav_1():LowerNavComponentPhone
+			{
+				return FlexGlobals.topLevelApplication.lowerNav;
+			} */
+			
+			static public function get registryOverlay_1():MedicationRegistryOverlay
+			{
+				return FlexGlobals.topLevelApplication.registryOverlay;
+			}
+			
+			private var timer : Timer = new Timer(12000, 1);
+			private var secondTimer : Timer = new Timer(30000, 1);
+			
+			// starts timer for native alert pop-up when the wall is interacted with
+			protected function application1_applicationCompleteHandler(event:FlexEvent):void
+			{
+				this.stage.setAspectRatio(StageAspectRatio.PORTRAIT);
+				this.stage.autoOrients = false;
+				
+				timer.addEventListener(TimerEvent.TIMER, handleTimer);
+				timer.start();
+				
+				secondTimer.addEventListener(TimerEvent.TIMER, handleSecondTimer);
+				secondTimer.start();
+				
+				// NEW
+				wallData.wallCounter = 1;
+				
+			}
+			
+			private function fadeOutShareIcons(e:Event=null):void
+			{
+				
+			}
+				
+			// private var nativeAlert : NativeAlert = new NativeAlert;
+			
+			// opens appointment reminder overlay
+			private function handleTimer(event:TimerEvent):void
+			{
+				// nativeAlert.showAlertWithTitleAndMessage("Appointment Reminder", "May 1st, 3pm, Dr. Martinez.", "Details", "Dismiss");
+				// nativeAlert.addEventListener(NativeAlertEvent.ALERT_CLOSE_EVENT, nativeAlert_closeEventHandler);
+				openApptReminder.play();
+				timer.stop();
+			}
+			
+			private function handleSecondTimer(event:TimerEvent):void
+			{
+				openFollowUpAlert.play();
+				secondTimer.stop();
+			}
+			
+/* 			protected function nativeAlert_closeEventHandler (event : NativeAlertEvent) : void
+			{
+				nativeAlert.removeEventListener(NativeAlertEvent.ALERT_CLOSE_EVENT, nativeAlert_closeEventHandler);
+				// FlexGlobals.topLevelApplication.navigator.pushView(VisitView);
+				
+				// trace ("wall view alert tapped");
+			} */
+			
+			protected function homeBtn_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				navigator.popToFirstView();
+			}
+			
+			protected function visitBtn_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				navigator.pushView(VisitHomeView);
+			}
+						
+			protected function apptReminderBtn_clickHandler(event:MouseEvent):void
+			{
+				closeCloseApptReminder.play();
+				apptReminder.visible = false;
+				apptReminder.includeInLayout = false;
+				
+				// can't have the mouseEvent start a timerEvent....ask David for tips
+				
+				// apptReminder.addEventListener(MouseEvent.CLICK, handleDialogDismiss);
+				
+				// secondTimer.addEventListener(TimerEvent.TIMER, handleSecondTimer);
+				// secondTimer.start();
+			}
+			
+			protected function followUpAlertBtn_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				closeFollowUpAlert.play();
+				followUpAlert.visible = false;
+				followUpAlert.includeInLayout = false;
+				navigator.pushView(VisitPlayBackView);
+			}
+			
+			protected function secondaryNavMedBtn_clickHandler(event:MouseEvent):void
+			{
+				navigator.pushView(MedicationsView);
+			}
+			
+			protected function secondaryNavRegBtn_clickHandler(event:MouseEvent):void
+			{
+				navigator.pushView(RegistryView);
+			}
+			
+			protected function secondaryNavAlertBtn_clickHandler(event:MouseEvent):void
+			{
+				navigator.pushView(AlertsView);
+			}
+			
+			protected function laterBtn_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				closeFollowUpReminder.play();
+				followUpAlert.visible = false;
+				followUpAlert.includeInLayout = false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<parsley:ContextBuilder config="Config"/>
+		<parsley:Configure/>
+		
+		<s:Parallel id="openFollowUpAlert">
+			<s:Parallel target="{followUpAlert}">
+				<s:Fade alphaFrom="0" alphaTo="1" duration="250"/>
+			</s:Parallel>
+		</s:Parallel>
+		
+		<s:Parallel id="closeFollowUpAlert">
+			<s:Parallel target="{followUpAlert}">
+				<s:Fade alphaFrom="1" alphaTo="0" duration="200"/>
+			</s:Parallel>
+		</s:Parallel>	
+		
+		<s:Parallel id="openApptReminder">
+			<s:Parallel target="{apptReminder}">
+				<s:Fade alphaFrom="0" alphaTo="1" duration="350"/>
+			</s:Parallel>
+		</s:Parallel>
+		
+		<s:Parallel id="closeCloseApptReminder">
+			<s:Parallel target="{apptReminder}">
+				<s:Fade alphaFrom="1" alphaTo="0" duration="200"/>
+			</s:Parallel>
+		</s:Parallel>	
+		
+		<s:Parallel id="closeFollowUpReminder">
+			<s:Parallel target="{followUpAlert}">
+				<s:Fade alphaFrom="1" alphaTo="0" duration="200"/>
+			</s:Parallel>
+		</s:Parallel>	
+		
+	</fx:Declarations>
+	
+	<fx:Style source="Main.css"/>
+	
+	<c:CustomViewNavigator id="navigator" firstView="views.WallViewPhone" width="100%" height="100%"/>
+	
+	
+<!--	<s:Group id="secondaryNav" width="100%" horizontalCenter="0" top="82">
+		<s:Group horizontalCenter="0">
+			<s:HGroup gap="1" paddingTop="0">
+				<s:Button id="secondaryNavMedBtn" icon="assets/icons/BtnMedical2_icon.png"
+						  skinClass="skins.secondaryNavButtonSkin"
+						  click="secondaryNavMedBtn_clickHandler(event)"/>
+				<s:Button id="secondaryNavRegBtn" icon="assets/icons/BtnReg2_icon.png"
+						  skinClass="skins.secondaryNavButtonSkin"
+						  click="secondaryNavRegBtn_clickHandler(event)"/>
+				<s:Button id="secondaryNavAlertBtn" icon="assets/icons/BtnAlerts2_icon.png"
+						  skinClass="skins.secondaryNavButtonSkin"
+						  click="secondaryNavAlertBtn_clickHandler(event)"/>
+			</s:HGroup>
+		</s:Group>
+	</s:Group>-->
+		
+	<s:Group width="100%" height="100%" horizontalCenter="0" verticalCenter="0" id="followUpAlert" includeInLayout="false" visible="false">
+		<c:FollowUpOverlay/>
+		<s:Button id="followUpAlertBtn" skinClass="skins.PlainButtonSkin" icon="assets/reviewOverlayButton.png" y="480" x="79"
+				  click="followUpAlertBtn_clickHandler(event)"/>
+		<s:Button id="laterBtn" skinClass="skins.PlainButtonSkin" icon="assets/laterButtonOverlay.png" y="480" x="341"
+				  click="laterBtn_clickHandler(event)"/>
+	</s:Group>
+	
+	<s:Group width="100%" height="100%" horizontalCenter="0" verticalCenter="0" id="apptReminder" includeInLayout="false" visible="false">
+		<c:ApptReminderOverlay/>
+		<s:Button id="apptReminderDetailsBtn" skinClass="skins.PlainButtonSkin" icon="assets/detailsButtonOverlay.png" y="480" x="79"/>
+		<s:Button id="apptReminderDismissBtn" skinClass="skins.PlainButtonSkin" icon="assets/laterButtonOverlay.png" y="480" x="341"
+				click="apptReminderBtn_clickHandler(event)"/>
+	</s:Group>
+	
+	<c:MedicationRegistryOverlay id="registryOverlay" verticalCenter="0" horizontalCenter="0" visible="false"/>	
+
+<!--	<c:LowerNavComponentPhone id="lowerNav" width="100%" bottom="0"/>
+-->	
+<!--	<s:Group id="lowerNav" width="100%" bottom="0">
+		<s:VGroup horizontalAlign="center">
+			<s:Group width="100%">
+				<s:BitmapImage source="@Embed('assets/bottomNavLightNew.png')" horizontalCenter="0"/>
+				<s:HGroup horizontalCenter="0" gap="66" top="27">
+					<s:Button id="homeBtn" icon="assets/icons/homeNew_icon.png" 
+							  label="Home" skinClass="skins.menuBarButtonSkin"
+							  click="homeBtn_clickHandler(event)"/>
+					<s:Button id="calBtn" icon="assets/icons/calNew_icon.png" 
+							  label="Calendar" skinClass="skins.menuBarButtonSkin"/>
+					<s:Button id="visitBtn" icon="assets/icons/visitNew_icon.png" 
+							  label="Visit Assistant" skinClass="skins.menuBarButtonSkin"
+							  click="visitBtn_clickHandler(event)"/>
+					<s:Button id="emergencyBtn" icon="assets/icons/emergNew_icon.png" 
+							  label="Emergency" skinClass="skins.menuBarButtonSkin"/>
+				</s:HGroup>
+			</s:Group>
+		</s:VGroup>
+	</s:Group>-->
+	
+</s:Application>
