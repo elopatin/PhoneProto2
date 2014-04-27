@@ -42,7 +42,7 @@
 			}
 			
 			private var timer : Timer = new Timer(12000, 1);
-			private var secondTimer : Timer = new Timer(30000, 1);
+			private var secondTimer : Timer = new Timer(22000, 1);
 			
 			// starts timer for native alert pop-up when the wall is interacted with
 			protected function application1_applicationCompleteHandler(event:FlexEvent):void
