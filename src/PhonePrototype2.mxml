@@ -12,7 +12,7 @@
 		<![CDATA[
 			import flash.utils.Timer;
 			
-			// NEW
+			// WallData for use by Parsley
 			import model.WallDataIPhone;
 			
 			import mx.core.FlexGlobals;
@@ -26,7 +26,7 @@
 			import views.VisitHomeView;
 			import views.VisitPlayBackView;
 			
-			// NEW
+			// Parsley setup
 			[Inject]
 			[Bindable]
 			public var wallData:WallDataIPhone;
