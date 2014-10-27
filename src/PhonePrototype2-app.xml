@@ -266,6 +266,5 @@
         <requestedDisplayResolution>high</requestedDisplayResolution>
     </iPhone>
 <extensions>
-        <extensionID>uk.co.betadesigns.extension.nativealert.NativeAlert</extensionID>
     </extensions>
 </application>
