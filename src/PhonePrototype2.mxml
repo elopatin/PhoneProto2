@@ -18,7 +18,7 @@
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			
-			import org.osmf.events.TimeEvent;
+			// import org.osmf.events.TimeEvent;
 			
 			import views.AlertsView;
 			import views.MedicationsView;
