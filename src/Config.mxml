@@ -4,7 +4,7 @@
 	
 	<!--   
 	This is a parsley specific file that says which objects I want to manage... Manage means
-	create and destroy automatically, perform messaging, automatic injection etc...
+	create and destroy automatically, perform messaging, automatic injection etc... 
 	-->   
 	
 	<fx:Declarations>
